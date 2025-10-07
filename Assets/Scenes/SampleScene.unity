@@ -1475,6 +1475,18 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1232189057225415540, guid: eae93eaa1e6b5964094dd8a70b505450, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1246362779336328288, guid: eae93eaa1e6b5964094dd8a70b505450, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2801516360115776889, guid: eae93eaa1e6b5964094dd8a70b505450, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4167832434280718148, guid: eae93eaa1e6b5964094dd8a70b505450, type: 3}
       propertyPath: m_Name
       value: UserInterface
@@ -1557,6 +1569,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5397206169424131253, guid: eae93eaa1e6b5964094dd8a70b505450, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7917779876326491216, guid: eae93eaa1e6b5964094dd8a70b505450, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7922723638382586111, guid: eae93eaa1e6b5964094dd8a70b505450, type: 3}

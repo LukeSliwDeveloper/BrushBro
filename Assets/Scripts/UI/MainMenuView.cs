@@ -1,9 +1,7 @@
 using UnityEngine;
 
-public class MainMenuView : MonoBehaviour
+public class MainMenuView : UserInterfaceView
 {
-    [SerializeField] private UserInterface _userInterface;
-
     public void StartGameplay()
     {
 

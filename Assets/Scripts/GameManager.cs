@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     public float SfxVolume { get; private set; } = 1f;
     public bool OcclusionEnabled { get; private set; } = true;
     public int TopScore { get; private set; } = 0;
+    public GameState CurrentGameState { get; set; } = GameState.Menu;
 
     protected override bool Awake()
     {
@@ -85,4 +86,10 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     private void ApplyMusicVolume() => audioMixer.SetFloat("MusicVolume", Mathf.Log10(MusicVolume) * 20f);
 
     private void ApplySfxVolume() => audioMixer.SetFloat("SfxVolume", Mathf.Log10(SfxVolume) * 20f);
+}
+
+public enum GameState
+{
+    Menu,
+    Gameplay
 }
