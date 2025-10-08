@@ -1,18 +1,30 @@
 using UnityEngine;
 
-public class GameplayManager : MonoBehaviour
+public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
 {
     [SerializeField] private Transform _roadTransform;
 
-    private float _speed = 2f;
-    private bool _isLevelRunning;
+    public float RoadSpeed { get; private set; } = 2f;
 
-    private void FixedUpdate()
+    protected override bool Awake()
     {
-        _roadTransform.position += Vector3.forward * Time.fixedDeltaTime * _speed;
+        if (base.Awake())
+        {
+            GameManager.Instance.OnGameStateChanged += GameManager_OnGameStateChanged;
+            return true;
+        }
+        return false;
+    }
+
+    private void Update()
+    {
+        _roadTransform.position += Vector3.forward * Time.deltaTime * RoadSpeed;
         if (_roadTransform.position.z > 18f)
             _roadTransform.position -= new Vector3(0f, 0f, 18f);
     }
 
-    public void StartGame() => _isLevelRunning = true;
+    private void GameManager_OnGameStateChanged(GameState gameState)
+    {
+        
+    }
 }

@@ -6,7 +6,6 @@ public class Brush : MonoBehaviour
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private Transform _modelTransform;
-    [SerializeField] private LineRenderer _lineRenderer;
     
     private Vector2 _mousePosition;
     private bool _mousePositionFound;
@@ -20,14 +19,17 @@ public class Brush : MonoBehaviour
 
     private void OnLook(InputValue value)
     {
-        _mousePosition = value.Get<Vector2>();
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(value.Get<Vector2>()),out var hit, Mathf.Infinity))
+        if (GameManager.Instance.CurrentGameState == GameState.Gameplay)
         {
-            _mousePositionX = hit.point.x;
-            _mousePositionFound = true;
+            _mousePosition = value.Get<Vector2>();
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(value.Get<Vector2>()),out var hit, Mathf.Infinity))
+            {
+                _mousePositionX = hit.point.x;
+                _mousePositionFound = true;
+            }
+            else
+                _mousePositionFound = false;
         }
-        else
-            _mousePositionFound = false;
     }
 
     private void FixedUpdate()
@@ -39,18 +41,6 @@ public class Brush : MonoBehaviour
             _rigidbody.MovePosition(new Vector3(_targetPositionX, 0f, 0f));
         }
 
-        for (int i = _lineRenderer.positionCount - 1; i > 0; i--)
-        {
-            _lineRenderer.SetPosition(i, new Vector3(_lineRenderer.GetPosition(i - 1).x, -.4999f, i * .1f));
-        }
-        _lineRenderer.SetPosition(0, new Vector3(_targetPositionX, -.4999f, 0f));
-        _lineRenderer.SetPosition(1, Vector3.Lerp(_lineRenderer.GetPosition(1), (_lineRenderer.GetPosition(0) + _lineRenderer.GetPosition(2))/2f, .76f));
-        float averageLineAngle = 0f;
-        for (int i = 0; i < 5; i++)
-        {
-            averageLineAngle += Vector3.SignedAngle(_lineRenderer.GetPosition(i) - _lineRenderer.GetPosition(i+1), Vector3.back, Vector3.down);
-        }
-        averageLineAngle /= 5f;
-        _modelTransform.rotation = Quaternion.Euler(-25f, averageLineAngle, 0f);
+        _modelTransform.rotation = Quaternion.Euler(-25f, 0f, 0f);
     }
 }
