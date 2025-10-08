@@ -15,4 +15,6 @@ public class UserInterface : MonoBehaviour
         if (GameManager.Instance.CurrentGameState == GameState.Menu)
             _mainMenuGO.SetActive(true);
     }
+
+    public void ReloadScene() => GameManager.Instance.ReloadScene();
 }

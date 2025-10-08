@@ -1384,12 +1384,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 832575517}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 962892208}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &845719444
 PrefabInstance:
@@ -1965,7 +1965,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 832575519}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &986456772
@@ -2093,6 +2094,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d34cad8556332c441a3c082a47569793, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _conePrefab: {fileID: 1727014950661497735, guid: 43e1e9d5233b97e408e2056b92e34d9f, type: 3}
   _roadTransform: {fileID: 986456773}
 --- !u!4 &1037136478
 Transform:
@@ -2121,7 +2123,7 @@ GameObject:
   - component: {fileID: 1087253505}
   - component: {fileID: 1087253504}
   - component: {fileID: 1087253502}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2478,7 +2480,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 10
+  _hitKnockback: {x: 0, y: 0, z: 0.3}
   _rigidbody: {fileID: 1523783259}
+  _collider: {fileID: 1523783258}
   _modelTransform: {fileID: 555185869}
 --- !u!114 &1523783256
 MonoBehaviour:
@@ -2519,7 +2523,7 @@ Transform:
   m_GameObject: {fileID: 1523783254}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 4.83}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2572,7 +2576,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 124
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!1001 &1528818077
 PrefabInstance:
@@ -3665,7 +3669,6 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 832575519}
   - {fileID: 1788340599}
   - {fileID: 330585546}
   - {fileID: 1523783257}

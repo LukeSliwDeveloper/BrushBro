@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviourSingleton<GameManager>
 {
@@ -25,17 +26,28 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     {
         if (base.Awake())
         {
-            LoadSave();
+            DontDestroyOnLoad(gameObject);
             return true;
         }
         return false;
+    }
+
+    private void Start()
+    {
+        LoadSave();
+    }
+
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(0);
+        ChangeGameState(GameState.Menu);
     }
 
     public void ChangeGameState(GameState gameState)
     {
         if (_volume.profile.TryGet(out DepthOfField dof))
         {
-            var focalLength = (gameState == GameState.Menu ? 300f : 1f);
+            var focalLength = (gameState == GameState.Gameplay ? 1f : 300f);
             DOTween.To(x => dof.focalLength.value = x, dof.focalLength.value, focalLength, .3f);
         }
         CurrentGameState = gameState;
@@ -121,5 +133,6 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 public enum GameState
 {
     Menu,
-    Gameplay
+    Gameplay,
+    GameOver
 }
