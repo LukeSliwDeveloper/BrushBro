@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class GameOverView : MonoBehaviour
+public class GameOverView : UserInterfaceView
 {
     private GameManager _gameManager;
 
@@ -21,6 +21,10 @@ public class GameOverView : MonoBehaviour
     private void GameManager_OnGameStateChanged(GameState state)
     {
         if (state == GameState.GameOver)
+        {
+            _gameManager.SetTopScore(_userInterface.Score);
+            Debug.Log("New Top Score: " + _gameManager.TopScore);
             gameObject.SetActive(true);
+        }
     }
 }

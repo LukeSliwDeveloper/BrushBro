@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -19,6 +18,7 @@ public class Brush : MonoBehaviour
     private Vector3 _targetPosition;
     private Vector3 _mousePosition;
     private bool _mousePositionFound;
+    private bool _movedThisTick;
     private bool _isImmune = false;
     private bool _isInert = false;
 
@@ -56,15 +56,22 @@ public class Brush : MonoBehaviour
                 _targetPosition += _pushingForce;
                 _pushingForce = Vector3.zero;
             }
+            _movedThisTick = _targetPosition != _rigidbody.position;
             _rigidbody.MovePosition(_targetPosition);
         }
-
         _modelTransform.rotation = Quaternion.Euler(-25f, 0f, 0f);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        TakeDamage();
+        if (!other.CompareTag("Bump"))
+            TakeDamage();
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Bump") && _movedThisTick)
+            TakeDamage();
     }
 
     public void TakeDamage()

@@ -19,15 +19,31 @@ public class SettingsView : UserInterfaceView
 
     public void CloseSettings()
     {
+        _userInterface.PlayClick();
         gameObject.SetActive(false);
-        _userInterface.OpenMenu();
+        if (GameManager.Instance.CurrentGameState == GameState.Pause)
+            GameManager.Instance.Unpause();
+        else
+            _userInterface.OpenMenu();
     }
 
-    public void ResetMasterVolume() => GameManager.Instance.SetMasterVolume(_masterSlider.value = .5f);
+    public void ResetMasterVolume()
+    {
+        _userInterface.PlayClick();
+        GameManager.Instance.SetMasterVolume(_masterSlider.value = .5f);
+    }
 
-    public void ResetMusicVolume() => GameManager.Instance.SetMusicVolume(_musicSlider.value = .5f);
+    public void ResetMusicVolume()
+    {
+        _userInterface.PlayClick();
+        GameManager.Instance.SetMusicVolume(_musicSlider.value = .5f);
+    }
 
-    public void ResetSfxVolume() => GameManager.Instance.SetSfxVolume(_sfxSlider.value = 1f);
+    public void ResetSfxVolume()
+    {
+        _userInterface.PlayClick();
+        GameManager.Instance.SetSfxVolume(_sfxSlider.value = 1f);
+    }
 
     public void ChangeMasterVolume(float value) => GameManager.Instance.SetMasterVolume(value);
 
@@ -37,6 +53,7 @@ public class SettingsView : UserInterfaceView
 
     public void ChangeOcclusion()
     {
+        _userInterface.PlayClick();
         GameManager.Instance.SetOcclusionEnabled(!GameManager.Instance.OcclusionEnabled);
         AdjustOcclusionSprites();
     }

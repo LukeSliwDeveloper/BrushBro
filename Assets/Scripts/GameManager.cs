@@ -3,6 +3,7 @@ using System;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
@@ -35,6 +36,21 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     private void Start()
     {
         LoadSave();
+    }
+
+    private void OnAttack(InputValue value)
+    {
+        if (CurrentGameState == GameState.Gameplay)
+        {
+            Time.timeScale = 0f;
+            ChangeGameState(GameState.Pause);
+        }
+    }
+
+    public void Unpause()
+    {
+        Time.timeScale = 1f;
+        ChangeGameState(GameState.Gameplay);
     }
 
     public void ReloadScene()
@@ -134,5 +150,6 @@ public enum GameState
 {
     Menu,
     Gameplay,
+    Pause,
     GameOver
 }
