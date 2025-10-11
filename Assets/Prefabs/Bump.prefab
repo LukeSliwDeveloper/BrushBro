@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8655576376743448535}
   - component: {fileID: 8608773293575137019}
   - component: {fileID: 1009799211503043677}
+  - component: {fileID: 3426950975676174946}
   m_Layer: 0
   m_Name: Bump
   m_TagString: Bump
@@ -65,6 +66,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4cba5952815d9804fb63c634bf38c6e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3426950975676174946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5929963676053262120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12c2bf7e8e6379f40afdec90460d6561, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1160309632059504439

@@ -19,9 +19,12 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     public float SfxVolume { get; private set; } = 1f;
     public bool OcclusionEnabled { get; private set; } = true;
     public int TopScore { get; private set; } = 0;
+    public bool WasRmbTutorialComplete { get; set; }
+    public bool WasBumpTutorialComplete { get; set; }
     public GameState CurrentGameState { get; set; } = GameState.Menu;
 
     public event Action<GameState> OnGameStateChanged;
+    public event Action<Vector2> OnLooked;
 
     protected override bool Awake()
     {
@@ -38,10 +41,18 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         LoadSave();
     }
 
+    private void OnLook(InputValue value) => OnLooked?.Invoke(value.Get<Vector2>());
+
     private void OnAttack(InputValue value)
     {
         if (CurrentGameState == GameState.Gameplay)
         {
+            if (!WasRmbTutorialComplete)
+            {
+                WasRmbTutorialComplete = true;
+                PlayerPrefs.SetInt("WasRmbTutorialComplete", 1);
+                PlayerPrefs.Save();
+            }
             Time.timeScale = 0f;
             ChangeGameState(GameState.Pause);
         }
@@ -112,6 +123,13 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         }
     }
 
+    public void CompleteBumpTutorial()
+    {
+        WasBumpTutorialComplete = true;
+        PlayerPrefs.SetInt("WasBumpTutorialComplete", 1);
+        PlayerPrefs.Save();
+    }
+
     public void ResetSave()
     {
         PlayerPrefs.DeleteAll();
@@ -130,6 +148,8 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         OcclusionEnabled = PlayerPrefs.GetInt("OcclusionEnabled", 1) == 1;
         ApplyOcclusion();
         TopScore = PlayerPrefs.GetInt("TopScore", 0);
+        WasRmbTutorialComplete = PlayerPrefs.GetInt("WasRmbTutorialComplete", 0) == 1;
+        WasBumpTutorialComplete = PlayerPrefs.GetInt("WasBumpTutorialComplete", 0) == 1;
     }
 
     private void ApplyMasterVolume() => _audioMixer.SetFloat("MasterVolume", Mathf.Log10(MasterVolume) * 20f);

@@ -21,12 +21,13 @@ public class Brush : MonoBehaviour
     private bool _movedThisTick;
     private bool _isImmune = false;
     private bool _isInert = false;
+    private GameManager _gameManager;
 
-    private void OnLook(InputValue value)
+    private void GameManager_OnLooked(Vector2 value)
     {
         if (GameManager.Instance.CurrentGameState == GameState.Gameplay)
         {
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(value.Get<Vector2>()), out var hit, Mathf.Infinity, _roadLayerMask))
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(value), out var hit, Mathf.Infinity, _roadLayerMask))
             {
                 _mousePosition = hit.point;
                 _mousePosition.y = 0f;
@@ -37,6 +38,18 @@ public class Brush : MonoBehaviour
         }
         else
             _mousePositionFound = false;
+    }
+
+    private void Awake()
+    {
+        _gameManager = GameManager.Instance;
+        _gameManager.OnLooked += GameManager_OnLooked;
+    }
+
+    private void OnDestroy()
+    {
+        if (_gameManager != null)
+            _gameManager.OnLooked -= GameManager_OnLooked;
     }
 
     private void FixedUpdate()

@@ -4,7 +4,7 @@ using Random = UnityEngine.Random;
 
 public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
 {
-    [SerializeField] private GameObject _bumpPrefab;
+    [SerializeField] private DestroyedCaller _bumpPrefab;
     [SerializeField] private GameObject[] _obstaclePrefabs;
     [SerializeField] private GameObject[] _plantPrefabs;
     [SerializeField] private Transform _roadTransform;
@@ -12,9 +12,10 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
     private float _nextObstacleSpawnDistanceLeft, _nextBumpSpawnDistanceLeft;
     private float _nextMotorcycleSpawnTime;
     private float _nextPlantSpawnDistanceLeft, _nextPlantSpawnDistanceRight;
+    private bool _didPlayerTakeDamage;
 
     private Vector2 _obstacleSpawnInterval = new Vector2(2f, 6f);
-    private Vector2 _bumpSpawnInterval = new Vector2(8f, 12f);
+    private Vector2 _bumpSpawnInterval = new Vector2(12f, 18f);
     private Vector2 _motorcycleSpawnInterval = new Vector2(1f, 2.5f);
     private Vector2 _plantSpawnInterval = new Vector2(2.5f, 5f);
     private int _playerLives = 3;
@@ -22,6 +23,8 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
     public float RoadSpeed { get; private set; } = 2f;
 
     public event Action OnMove;
+    public event Action<int> OnPlayerHit;
+    public event Action<bool> OnBumpTutorialComplete;
 
     protected override bool Awake()
     {
@@ -58,9 +61,12 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
 
     public bool RevivePlayer()
     {
-        if (--_playerLives == 0)
+        OnPlayerHit?.Invoke(--_playerLives);
+        _didPlayerTakeDamage = true;
+        if (_playerLives <= 0)
         {
-            GameManager.Instance.ChangeGameState(GameState.GameOver);
+            if (_playerLives == 0)
+                GameManager.Instance.ChangeGameState(GameState.GameOver);
             return false;
         }
         return true;
@@ -76,7 +82,13 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
 
             if ((_nextBumpSpawnDistanceLeft -= Time.deltaTime * RoadSpeed) <= 0f)
             {
-                Instantiate(_bumpPrefab, new Vector3(Random.Range(-2.1f, 2.1f), 0f, -5.4f), Quaternion.identity);
+                var bump = Instantiate(_bumpPrefab, new Vector3(Random.Range(-2.1f, 2.1f), 0f, -5.4f), Quaternion.identity);
+                if (!GameManager.Instance.WasBumpTutorialComplete)
+                {
+                    bump.OnDestroyed += CheckBumpTutorialComplete;
+                    OnBumpTutorialComplete?.Invoke(false);
+                    _didPlayerTakeDamage = false;
+                }
                 _nextBumpSpawnDistanceLeft = Random.Range(_bumpSpawnInterval.x, _bumpSpawnInterval.y);
             }
             if ((_nextObstacleSpawnDistanceLeft -= Time.deltaTime * RoadSpeed) <= 0f)
@@ -85,6 +97,15 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
                 _nextObstacleSpawnDistanceLeft = Random.Range(_obstacleSpawnInterval.x, _obstacleSpawnInterval.y);
             }
             OnMove?.Invoke();
+        }
+    }
+
+    private void CheckBumpTutorialComplete()
+    {
+        if (!_didPlayerTakeDamage)
+        {
+            GameManager.Instance.CompleteBumpTutorial();
+            OnBumpTutorialComplete?.Invoke(true);
         }
     }
 
