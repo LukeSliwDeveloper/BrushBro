@@ -27,8 +27,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7855073649242593187}
   m_Father: {fileID: 0}
@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cba5952815d9804fb63c634bf38c6e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _additionalSpeed: {x: 0, y: 0, z: 0}
+  _destoryOnCollision: 0
 --- !u!1001 &6234959061442272626
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -59,7 +61,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4934302629171017007, guid: 4656da755d5795148b5a1e751f301d66, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.492
+      value: -0.327
       objectReference: {fileID: 0}
     - target: {fileID: -4934302629171017007, guid: 4656da755d5795148b5a1e751f301d66, type: 3}
       propertyPath: m_LocalPosition.z

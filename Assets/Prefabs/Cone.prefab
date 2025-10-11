@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4067615174350557002}
   m_Layer: 0
   m_Name: Cone
-  m_TagString: Untagged
+  m_TagString: Finish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -67,6 +67,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cba5952815d9804fb63c634bf38c6e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _additionalSpeed: {x: 0, y: 0, z: 0}
+  _destoryOnCollision: 1
 --- !u!1001 &7392903835691381695
 PrefabInstance:
   m_ObjectHideFlags: 0

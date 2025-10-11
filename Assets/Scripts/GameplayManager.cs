@@ -4,19 +4,19 @@ using Random = UnityEngine.Random;
 
 public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
 {
+    [SerializeField] private GameObject _motorbikePrefab;
     [SerializeField] private DestroyedCaller _bumpPrefab;
     [SerializeField] private GameObject[] _obstaclePrefabs;
     [SerializeField] private GameObject[] _plantPrefabs;
     [SerializeField] private Transform _roadTransform;
 
-    private float _nextObstacleSpawnDistanceLeft, _nextBumpSpawnDistanceLeft;
-    private float _nextMotorcycleSpawnTime;
+    private float _nextObstacleSpawnDistanceLeft, _nextBumpSpawnDistanceLeft, _nextBikeSpawnDistanceLeft;
     private float _nextPlantSpawnDistanceLeft, _nextPlantSpawnDistanceRight;
     private bool _didPlayerTakeDamage;
 
     private Vector2 _obstacleSpawnInterval = new Vector2(2f, 6f);
     private Vector2 _bumpSpawnInterval = new Vector2(12f, 18f);
-    private Vector2 _motorcycleSpawnInterval = new Vector2(1f, 2.5f);
+    private Vector2 _bikeSpawnInterval = new Vector2(20f, 25f);
     private Vector2 _plantSpawnInterval = new Vector2(2.5f, 5f);
     private int _playerLives = 3;
 
@@ -82,7 +82,7 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
 
             if ((_nextBumpSpawnDistanceLeft -= Time.deltaTime * RoadSpeed) <= 0f)
             {
-                var bump = Instantiate(_bumpPrefab, new Vector3(Random.Range(-2.1f, 2.1f), 0f, -5.4f), Quaternion.identity);
+                var bump = Instantiate(_bumpPrefab, new Vector3(0f, 0f, -5.4f), Quaternion.identity);
                 if (!GameManager.Instance.WasBumpTutorialComplete)
                 {
                     bump.OnDestroyed += CheckBumpTutorialComplete;
@@ -95,6 +95,23 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
             {
                 SpawnObstacle(_obstaclePrefabs[Random.Range(0, _obstaclePrefabs.Length)]);
                 _nextObstacleSpawnDistanceLeft = Random.Range(_obstacleSpawnInterval.x, _obstacleSpawnInterval.y);
+            }
+            if ((_nextBikeSpawnDistanceLeft -= Time.deltaTime * RoadSpeed) <= 0f)
+            {
+                int offset = Random.Range(0, 15);
+                int xIndex;
+                for (int i = 0; i < 15; i++)
+                {
+                    xIndex = (i + offset) % 15 - 7;
+                    if (Physics.BoxCast(new Vector3(.5f * xIndex, .5f, -5.4f), new Vector3(.14f, .1f, .1f), Vector3.forward, out var hit)
+                        && hit.collider.CompareTag("Finish")) ;
+                    else
+                    {
+                        Instantiate(_motorbikePrefab, new Vector3(.5f * xIndex, 0f, -5.4f), Quaternion.identity);
+                        break;
+                    }
+                }
+                _nextBikeSpawnDistanceLeft = Random.Range(_bikeSpawnInterval.x, _bikeSpawnInterval.y);
             }
             OnMove?.Invoke();
         }
@@ -126,8 +143,8 @@ public class GameplayManager : MonoBehaviourSingleton<GameplayManager>
         if (gameState == GameState.Gameplay)
         {
             _nextObstacleSpawnDistanceLeft = Random.Range(_obstacleSpawnInterval.x, _obstacleSpawnInterval.y);
-            _nextBumpSpawnDistanceLeft = Random.Range(_bumpSpawnInterval.x, _bumpSpawnInterval.y);
-            _nextMotorcycleSpawnTime = Time.time + 20f;
+            _nextBumpSpawnDistanceLeft = 25f;
+            _nextBikeSpawnDistanceLeft = 100f;
         }
         if (gameState == GameState.GameOver)
         {

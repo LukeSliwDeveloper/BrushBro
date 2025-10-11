@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     [SerializeField] private AudioMixer _audioMixer;
     [SerializeField] private ScriptableRendererData _rendererData;
     [SerializeField] private Volume _volume;
+    [SerializeField] private AudioSource _music;
 
     public float MasterVolume { get; private set; } = 1f;
     public float MusicVolume { get; private set; } = 1f;
@@ -76,6 +77,14 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         {
             var focalLength = (gameState == GameState.Gameplay ? 1f : 300f);
             DOTween.To(x => dof.focalLength.value = x, dof.focalLength.value, focalLength, .3f);
+        }
+        if (gameState == GameState.Menu)
+        {
+            _music.DOFade(1f, .3f);
+        }
+        else if (gameState == GameState.GameOver)
+        {
+            _music.DOFade(0f, .3f);
         }
         CurrentGameState = gameState;
         OnGameStateChanged?.Invoke(CurrentGameState);

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,12 +9,16 @@ public class Brush : MonoBehaviour
     [SerializeField] private Vector3 _hitKnockback = Vector3.forward * .2f;
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private Collider _collider;
+    [SerializeField] private AudioSource _hurtAudio;
     [SerializeField] private Transform _modelTransform;
+    [SerializeField] private LineRenderer _lineRenderer;
 
     private int _roadLayerMask = 1 << 3;
     private int _flickerTicksAmount = 13;
+    private float _updatePathDelay = .05f;
     private WaitForSeconds _flickerTickDuration = new WaitForSeconds(0.15f);
 
+    List<Vector3> _linePositions = new List<Vector3>();
     private Vector3 _pushingForce;
     private Vector3 _targetPosition;
     private Vector3 _mousePosition;
@@ -42,6 +47,7 @@ public class Brush : MonoBehaviour
 
     private void Awake()
     {
+        _linePositions.Add(_lineRenderer.GetPosition(0));
         _gameManager = GameManager.Instance;
         _gameManager.OnLooked += GameManager_OnLooked;
     }
@@ -52,11 +58,11 @@ public class Brush : MonoBehaviour
             _gameManager.OnLooked -= GameManager_OnLooked;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (!_isInert && _mousePositionFound)
         {
-            _targetPosition = _rigidbody.position + Vector3.ClampMagnitude(_mousePosition - _rigidbody.position, _moveSpeed * Time.fixedDeltaTime);
+            _targetPosition = transform.position + Vector3.ClampMagnitude(_mousePosition - transform.position, _moveSpeed * Time.deltaTime);
             if (_targetPosition.z > 4.2f || _targetPosition.z < -3.5f)
                 _targetPosition.z = Mathf.Clamp(_targetPosition.z, -3.5f, 4.2f);
             if (_targetPosition.x > 4f || _targetPosition.x < -4f)
@@ -69,10 +75,34 @@ public class Brush : MonoBehaviour
                 _targetPosition += _pushingForce;
                 _pushingForce = Vector3.zero;
             }
-            _movedThisTick = _targetPosition != _rigidbody.position;
-            _rigidbody.MovePosition(_targetPosition);
+            _movedThisTick = _targetPosition != transform.position;
+            float averageLineAngle = 0f;
+            int positionsCount = Mathf.Min(15, _linePositions.Count);
+            Vector3 newLine;
+            for (int i = 1; i <= positionsCount; i++)
+            {
+                newLine = _linePositions[_linePositions.Count - i]; newLine.y = 0f;
+                averageLineAngle += Vector3.SignedAngle(transform.position - newLine, Vector3.back, Vector3.down);
+            }
+            averageLineAngle /= positionsCount;
+            _modelTransform.rotation = Quaternion.Euler(-25f, Mathf.Clamp(averageLineAngle, -15f, 15f), 0f);
+            transform.position = _targetPosition;
+            if ((_updatePathDelay -= Time.deltaTime) <= 0f)
+            {
+                _updatePathDelay += .05f;
+                Vector3 upVector = new(0f, 0f, GameplayManager.Instance.RoadSpeed * (0.05f + _updatePathDelay));
+                for (int i = 0; i < _linePositions.Count;)
+                {
+                    if ((_linePositions[i] += upVector).z >= 4.8f)
+                        _linePositions.RemoveAt(i);
+                    else
+                        i++;
+                }
+                _linePositions.Add(transform.position + Vector3.down * .49f);
+                _lineRenderer.positionCount = _linePositions.Count;
+                _lineRenderer.SetPositions(_linePositions.ToArray());
+            }
         }
-        _modelTransform.rotation = Quaternion.Euler(-25f, 0f, 0f);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -93,6 +123,7 @@ public class Brush : MonoBehaviour
         {
             if (GameplayManager.Instance.RevivePlayer())
             {
+                _hurtAudio.Play();
                 _isInert = _isImmune = true;
                 _pushingForce = _hitKnockback;
                 StartCoroutine(Flicker());

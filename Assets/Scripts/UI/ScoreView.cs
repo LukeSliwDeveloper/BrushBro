@@ -71,7 +71,7 @@ public class ScoreView : MonoBehaviour
 
     private void GameplayManager_OnMove()
     {
-        Score += 2 * Time.deltaTime;
+        Score += 1 * Time.deltaTime;
         if (!_isHighlighted && (Mathf.RoundToInt(Score) > _gameManager.TopScore))
         {
             _titleImage.sprite = _highlightedSprite;
